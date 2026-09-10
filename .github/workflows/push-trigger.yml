@@ -1,4 +1,5 @@
 name: Maven Package upon a push
+run-name: "Maven Package upon a push ${{ inputs.leg || github.event_name }} ${{ inputs.racecar_run }}"
 
 on:
   release:
@@ -18,6 +19,19 @@ on:
         required: false
         default: 'Triggered for Updates'
         type: string
+      leg:
+        description: "baseline (uninstrumented) or instrumented (under chalk/curiosity)"
+        type: choice
+        options: [instrumented, baseline]
+        default: baseline
+      profile:
+        description: "CrashOverride chalk profile"
+        type: string
+        default: curiosity-tests-racecar
+      racecar_run:
+        description: "racecar correlation token, echoed into the run name"
+        type: string
+        default: ""
   push:
     branches:
       - '!release-branch'
@@ -27,6 +41,9 @@ on:
       - develop*
       - MOSIP*
 
+
+env:
+  CHALK_ON: ${{ inputs.leg == 'instrumented' }}
 jobs:
   build-kafka-admin-client:
     uses: mosip/kattu/.github/workflows/maven-build.yml@master-java21
