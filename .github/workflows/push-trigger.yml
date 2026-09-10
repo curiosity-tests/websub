@@ -58,6 +58,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   publish-to-nexus-kafka-admin-client:
+    if: false   # racecar: scan/report job, not a build
     if: "${{ !contains(github.ref, 'master') && github.event_name != 'pull_request' && github.event_name != 'release' && github.event_name != 'prerelease' && github.event_name != 'publish' }}"
     needs: build-kafka-admin-client
     uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@master-java21
@@ -72,6 +73,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   sonar-analysis-kafka-admin-client:
+    if: false   # racecar: scan/report job, not a build
     needs: build-kafka-admin-client
     if: "${{ github.event_name != 'pull_request' }}"
     uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master-java21
@@ -138,6 +140,7 @@ jobs:
           path: ./${{ env.SERVICE_LOCATION }}/${{ env.BUILD_ARTIFACT }}.zip
 
       - uses: 8398a7/action-slack@v3
+        continue-on-error: true   # racecar: scan/report step, must not fail the build
         with:
           status: ${{ job.status }}
           fields: repo,message,author,commit,workflow,job # selectable (default: repo,message)
@@ -210,6 +213,7 @@ jobs:
           path: ./${{ env.SERVICE_LOCATION }}/${{ env.BUILD_ARTIFACT }}.zip
 
       - uses: 8398a7/action-slack@v3
+        continue-on-error: true   # racecar: scan/report step, must not fail the build
         with:
           status: ${{ job.status }}
           fields: repo,message,author,commit,workflow,job # selectable (default: repo,message)
