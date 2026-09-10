@@ -58,8 +58,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   publish-to-nexus-kafka-admin-client:
-    if: false   # racecar: scan/report job, not a build
-    if: false   # racecar: scan/report job, not a build
+    continue-on-error: true   # racecar: scan job other jobs need
     if: "${{ !contains(github.ref, 'master') && github.event_name != 'pull_request' && github.event_name != 'release' && github.event_name != 'prerelease' && github.event_name != 'publish' }}"
     needs: build-kafka-admin-client
     uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@master-java21
@@ -74,8 +73,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   sonar-analysis-kafka-admin-client:
-    if: false   # racecar: scan/report job, not a build
-    if: false   # racecar: scan/report job, not a build
+    continue-on-error: true   # racecar: scan job other jobs need
     needs: build-kafka-admin-client
     if: "${{ github.event_name != 'pull_request' }}"
     uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master-java21
